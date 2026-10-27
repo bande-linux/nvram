@@ -1,0 +1,25 @@
+#!/usr/bin/make -f
+
+export CARGO_HOME=$(CURDIR)/debian/cargo-home
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	cargo build --release --locked -p unbound-nvram -p unbound-bless
+
+override_dh_auto_install:
+	install -D -m0755 target/release/unbound-nvram debian/unbound-nvram/usr/bin/unbound-nvram
+	install -D -m0755 target/release/unbound-bless debian/unbound-bless/usr/bin/unbound-bless
+
+override_dh_auto_clean:
+	rm -rf target debian/cargo-home
+
+override_dh_auto_test:
+	cargo test --release --locked -p apple-nvram -p unbound-nvram -p unbound-bless
+
+override_dh_dwz:
+
+override_dh_gencontrol:
+	dh_gencontrol -punbound-nvram
+	dh_gencontrol -punbound-bless -- -v0.4.4

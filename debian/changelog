@@ -1,0 +1,5 @@
+unbound-nvram (0.2.5) unstable; urgency=medium
+
+  * Initial Debian packages of unbound-nvram 0.2.5 and unbound-bless 0.4.4.
+
+ -- Mikael Hug <mikaelhug@gmail.com>  Tue, 27 Oct 2026 15:30:00 +0100
