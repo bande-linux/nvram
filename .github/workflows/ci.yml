@@ -1,0 +1,76 @@
+name: ci
+
+on:
+  push:
+    branches: [ main, 'prep/**' ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: [self-hosted, unbound]
+    timeout-minutes: 30
+
+    env:
+      RUSTC_WRAPPER: sccache
+      CARGO_TARGET_DIR: /cache/target/nvram
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Select crates
+        run: |
+          if pkg-config --exists dbus-1; then
+            echo "EXCLUDE=" >> "$GITHUB_ENV"
+          else
+            echo "libdbus-1 is missing, skipping unbound-btsync"
+            echo "EXCLUDE=--exclude unbound-btsync" >> "$GITHUB_ENV"
+          fi
+
+      - name: check
+        run: cargo check --locked --workspace $EXCLUDE --all-targets
+
+      - name: clippy
+        run: cargo clippy --locked --workspace $EXCLUDE --all-targets
+
+      - name: test
+        run: cargo test --locked --workspace $EXCLUDE
+
+  fmt:
+    runs-on: [self-hosted, unbound]
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: fmt
+        run: cargo fmt --all --check
+
+  deb:
+    runs-on: [self-hosted, unbound]
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build the packages on Debian 13
+        run: |
+          mkdir -p out
+          git archive --prefix=src/ HEAD | docker run --rm -i debian:trixie sh -euc '
+            apt-get update -qq
+            apt-get install -y -qq --no-install-recommends build-essential debhelper cargo rustc ca-certificates lintian >/dev/null
+            tar -x -C /tmp
+            cd /tmp/src
+            dpkg-buildpackage -us -uc -b >&2
+            lintian --fail-on error --suppress-tags no-copyright-file ../*.deb >&2
+            dpkg -i ../*.deb >&2
+            unbound-nvram --help >&2
+            unbound-bless --help >&2
+            cd /tmp && tar -c *.deb' | tar -x -C out
+          ls -l out
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: nvram-debs
+          path: out/*.deb
