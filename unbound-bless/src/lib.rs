@@ -352,13 +352,15 @@ pub fn clear_next_boot(device: &str) -> Result<bool> {
     file.read_to_end(&mut data).map_err(Error::ApplyError)?;
     let mut nv = nvram_parse(&data)?;
     nv.prepare_for_write();
-    if nv.active_part_mut().get_variable(ALT_BOOT_VAR, VarType::System).is_none() {
+    if nv
+        .active_part_mut()
+        .get_variable(ALT_BOOT_VAR, VarType::System)
+        .is_none()
+    {
         return Ok(false);
     }
-    nv.active_part_mut().remove_variable(
-        ALT_BOOT_VAR,
-        VarType::System,
-    );
+    nv.active_part_mut()
+        .remove_variable(ALT_BOOT_VAR, VarType::System);
     nv.apply(&mut file)?;
     Ok(true)
 }

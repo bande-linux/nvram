@@ -49,8 +49,12 @@ pub fn bluez_connect(
 
     let adapter_mac = format!(
         "{:02X}:{:02X}:{:02X}:{:02X}:{:02X}:{:02X}",
-        bt_info.mac[0], bt_info.mac[1], bt_info.mac[2],
-        bt_info.mac[3], bt_info.mac[4], bt_info.mac[5]
+        bt_info.mac[0],
+        bt_info.mac[1],
+        bt_info.mac[2],
+        bt_info.mac[3],
+        bt_info.mac[4],
+        bt_info.mac[5]
     );
 
     let bluez1 = con.with_proxy("org.bluez", "/org/bluez", Duration::from_secs(2));

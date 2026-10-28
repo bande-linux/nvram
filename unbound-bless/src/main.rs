@@ -1,33 +1,30 @@
 // SPDX-License-Identifier: MIT
 #![allow(dead_code)]
-use unbound_bless::{get_boot_candidates, get_boot_volume, set_boot_volume, clear_next_boot,  BootCandidate, Error, Volume};
 use clap::Parser;
 use std::{
     io::{stdin, stdout, Write},
     num::IntErrorKind,
     process::ExitCode,
 };
+use unbound_bless::{
+    clear_next_boot, get_boot_candidates, get_boot_volume, set_boot_volume, BootCandidate, Error,
+    Volume,
+};
 
 #[cfg(target_os = "macos")]
-compile_error!("unbound-bless will only work on linux, if you are on macos, use system `bless` instead");
+compile_error!(
+    "unbound-bless will only work on linux, if you are on macos, use system `bless` instead"
+);
 
 type Result<T> = std::result::Result<T, Error>;
 
 #[derive(Parser)]
 #[command(version)]
 struct Args {
-    #[arg(
-        short,
-        long,
-        help = "Path to the nvram device."
-    )]
+    #[arg(short, long, help = "Path to the nvram device.")]
     device: Option<String>,
 
-    #[arg(
-        short,
-        long,
-        help = "Set boot volume for next boot only"
-    )]
+    #[arg(short, long, help = "Set boot volume for next boot only")]
     next: bool,
 
     #[arg(
@@ -38,7 +35,11 @@ struct Args {
     )]
     list_volumes: bool,
 
-    #[arg(long, value_name = "name_or_index", help = "Set boot volume by name or index")]
+    #[arg(
+        long,
+        value_name = "name_or_index",
+        help = "Set boot volume by name or index"
+    )]
     set_boot: Option<String>,
 
     #[arg(
@@ -51,7 +52,10 @@ struct Args {
     #[arg(name = "yes", short, long, help = "Do not ask for confirmation")]
     autoconfirm: bool,
 
-    #[arg(long, help = "Get currently selected boot target. May be combined with --next to show the next boot target.")]
+    #[arg(
+        long,
+        help = "Get currently selected boot target. May be combined with --next to show the next boot target."
+    )]
     get_boot: bool,
 
     #[arg(long, help = "Clear the selected next boot target")]
@@ -103,16 +107,17 @@ fn real_main() -> Result<()> {
         let cands = get_boot_candidates()?;
         let lc_name = spec.to_lowercase();
         for cand in &cands {
-            if cand.volumes.iter().any(|n| n.name.to_lowercase() == lc_name) {
+            if cand
+                .volumes
+                .iter()
+                .any(|n| n.name.to_lowercase() == lc_name)
+            {
                 set_boot_volume_by_ref(device, &cand, &args, false)?;
                 return Ok(());
             }
         }
         if let Ok(idx) = spec.parse::<usize>() {
-            let cand = cands
-                .into_iter()
-                .nth(idx - 1)
-                .ok_or(Error::OutOfRange)?;
+            let cand = cands.into_iter().nth(idx - 1).ok_or(Error::OutOfRange)?;
             set_boot_volume_by_ref(device, &cand, &args, false)?;
         } else {
             return Err(Error::VolumeNotFound);
@@ -197,7 +202,11 @@ fn set_boot_volume_by_ref(
         } else {
             "boot target for next boot only"
         };
-        println!("Will set volume {} as the {}", get_vg_name(&cand.volumes), as_what);
+        println!(
+            "Will set volume {} as the {}",
+            get_vg_name(&cand.volumes),
+            as_what
+        );
     }
     if !args.autoconfirm && !interactive {
         if !confirm() {
@@ -225,7 +234,7 @@ fn interactive_main(args: &Args, device: &str) -> Result<()> {
             Err(e) if e.kind() == &IntErrorKind::Empty => {
                 eprintln!("No volume selected. Leaving unchanged.");
                 return Ok(());
-            },
+            }
             _ => eprintln!("Enter a number from 1 to {}", cands.len()),
         }
     };
