@@ -5,6 +5,7 @@ use apple_nvram::{nvram_parse, VarType};
 
 #[derive(Debug)]
 #[allow(dead_code)]
+#[allow(clippy::enum_variant_names)]
 enum Error {
     Parse,
     SectionTooBig,

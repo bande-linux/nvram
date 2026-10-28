@@ -60,10 +60,7 @@ impl<T> Slot<T> {
     }
 
     pub fn empty(&self) -> bool {
-        match self {
-            Slot::Empty => true,
-            _ => false,
-        }
+        matches!(self, Slot::Empty)
     }
 }
 
@@ -81,7 +78,7 @@ impl<'a> Nvram<'a> {
         let mut max_gen = 0;
         let mut valid_partitions = 0;
 
-        for i in 0..partition_count {
+        for (i, slot) in partitions.iter_mut().enumerate() {
             let offset = i * PARTITION_SIZE;
             if offset >= nvr.len() {
                 break;
@@ -93,14 +90,14 @@ impl<'a> Nvram<'a> {
                         active = i;
                         max_gen = p_gen;
                     }
-                    partitions[i] = Slot::Valid(p);
+                    *slot = Slot::Valid(p);
                     valid_partitions += 1;
                 }
                 Err(V3Error::Empty) => {
-                    partitions[i] = Slot::Empty;
+                    *slot = Slot::Empty;
                 }
                 Err(_) => {
-                    partitions[i] = Slot::Invalid;
+                    *slot = Slot::Invalid;
                 }
             }
         }
@@ -188,8 +185,7 @@ impl<'a> crate::Nvram<'a> for Nvram<'a> {
 
         let mut data = Vec::with_capacity(PARTITION_SIZE);
         self.active_part().serialize(&mut data);
-        w.write_all(offset, &data)
-            .map_err(|e| Error::ApplyError(e))?;
+        w.write_all(offset, &data).map_err(Error::ApplyError)?;
         Ok(())
     }
 }

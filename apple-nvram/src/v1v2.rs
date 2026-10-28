@@ -413,7 +413,7 @@ impl<'a> crate::Nvram<'a> for Nvram<'a> {
     fn apply(&mut self, w: &mut dyn crate::NvramWriter) -> Result<()> {
         let data = self.serialize()?;
         w.erase_if_needed(0, data.len());
-        w.write_all(0, &data).map_err(|e| Error::ApplyError(e))?;
+        w.write_all(0, &data).map_err(Error::ApplyError)?;
         Ok(())
     }
 }

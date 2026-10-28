@@ -200,10 +200,8 @@ fn scan_volume(disk: &mut File) -> io::Result<HashMap<Uuid, Vec<Volume>>> {
             (sb.xp_desc_base() + i as u64) * block_size,
             sbc.get_buf(),
         )?;
-        if sbc.magic() == NxSuperblock::MAGIC {
-            if sbc.xid() > sb.xid() {
-                sb = sbc;
-            }
+        if sbc.magic() == NxSuperblock::MAGIC && sbc.xid() > sb.xid() {
+            sb = sbc;
         }
     }
     let mut omap_bytes = vec![0; OmapPhys::SIZE];
@@ -304,10 +302,10 @@ pub fn get_boot_candidates() -> Result<Vec<BootCandidate>> {
         }
     }
 
-    return Ok(cands);
+    Ok(cands)
 }
 
-const ALT_BOOT_VAR: &'static [u8] = b"alt-boot-volume";
+const ALT_BOOT_VAR: &[u8] = b"alt-boot-volume";
 
 pub fn get_boot_volume(device: &str, next: bool) -> Result<BootCandidate> {
     let mut file = OpenOptions::new()
@@ -320,17 +318,16 @@ pub fn get_boot_volume(device: &str, next: bool) -> Result<BootCandidate> {
     let mut nv = nvram_parse(&data)?;
 
     let active = nv.active_part_mut();
-    let v;
-    if next {
-        v = active
+    let v = if next {
+        active
             .get_variable(ALT_BOOT_VAR, VarType::System)
             .or(active.get_variable(b"boot-volume", VarType::System))
-            .ok_or(Error::Parse);
+            .ok_or(Error::Parse)
     } else {
-        v = active
+        active
             .get_variable(b"boot-volume", VarType::System)
-            .ok_or(Error::Parse);
-    }
+            .ok_or(Error::Parse)
+    };
     let data = String::from_utf8(v?.value().deref().to_vec()).unwrap();
     let [_, part_uuid, part_vg_uuid]: [&str; 3] =
         data.split(":").collect::<Vec<&str>>().try_into().unwrap();
@@ -368,7 +365,7 @@ pub fn clear_next_boot(device: &str) -> Result<bool> {
 pub fn set_boot_volume(device: &str, cand: &BootCandidate, next: bool) -> Result<()> {
     let mut nvram_key: &[u8] = b"boot-volume".as_ref();
     if next {
-        nvram_key = ALT_BOOT_VAR.as_ref();
+        nvram_key = ALT_BOOT_VAR;
     }
 
     let boot_str = format!(

@@ -57,9 +57,9 @@ pub enum VarType {
 
 impl Display for VarType {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
-        match self {
-            &VarType::Common => write!(f, "common"),
-            &VarType::System => write!(f, "system"),
+        match *self {
+            VarType::Common => write!(f, "common"),
+            VarType::System => write!(f, "system"),
         }
     }
 }

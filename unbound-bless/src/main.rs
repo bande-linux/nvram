@@ -112,7 +112,7 @@ fn real_main() -> Result<()> {
                 .iter()
                 .any(|n| n.name.to_lowercase() == lc_name)
             {
-                set_boot_volume_by_ref(device, &cand, &args, false)?;
+                set_boot_volume_by_ref(device, cand, &args, false)?;
                 return Ok(());
             }
         }
@@ -134,7 +134,7 @@ fn real_main() -> Result<()> {
             })
             .collect();
         if macos_cands.len() == 1 {
-            set_boot_volume_by_ref(device, &macos_cands[0], &args, false)?;
+            set_boot_volume_by_ref(device, macos_cands[0], &args, false)?;
         } else {
             return Err(Error::Ambiguous);
         }
@@ -208,10 +208,8 @@ fn set_boot_volume_by_ref(
             as_what
         );
     }
-    if !args.autoconfirm && !interactive {
-        if !confirm() {
-            return Ok(());
-        }
+    if !args.autoconfirm && !interactive && !confirm() {
+        return Ok(());
     }
     set_boot_volume(device, cand, args.next)?;
     Ok(())
