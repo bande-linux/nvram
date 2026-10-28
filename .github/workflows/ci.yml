@@ -32,7 +32,7 @@ jobs:
         run: cargo check --locked --workspace $EXCLUDE --all-targets
 
       - name: clippy
-        run: cargo clippy --locked --workspace $EXCLUDE --all-targets
+        run: cargo clippy --locked --workspace $EXCLUDE --all-targets -- -D warnings
 
       - name: test
         run: cargo test --locked --workspace $EXCLUDE
