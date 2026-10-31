@@ -1,19 +1,19 @@
 // SPDX-License-Identifier: MIT
 #![allow(dead_code)]
+use bande_bless::{
+    clear_next_boot, get_boot_candidates, get_boot_volume, set_boot_volume, BootCandidate, Error,
+    Volume,
+};
 use clap::Parser;
 use std::{
     io::{stdin, stdout, Write},
     num::IntErrorKind,
     process::ExitCode,
 };
-use unbound_bless::{
-    clear_next_boot, get_boot_candidates, get_boot_volume, set_boot_volume, BootCandidate, Error,
-    Volume,
-};
 
 #[cfg(target_os = "macos")]
 compile_error!(
-    "unbound-bless will only work on linux, if you are on macos, use system `bless` instead"
+    "bande-bless will only work on linux, if you are on macos, use system `bless` instead"
 );
 
 type Result<T> = std::result::Result<T, Error>;

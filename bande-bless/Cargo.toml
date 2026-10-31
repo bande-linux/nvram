@@ -1,11 +1,11 @@
 [package]
-name = "unbound-bless"
+name = "bande-bless"
 version = "0.4.4"
 edition = "2021"
 license = "MIT"
 description = "A tool to select active boot partition on ARM Macs"
-homepage = "https://github.com/unbound-linux/nvram"
-repository = "https://github.com/unbound-linux/nvram"
+homepage = "https://github.com/bande-linux/nvram"
+repository = "https://github.com/bande-linux/nvram"
 
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

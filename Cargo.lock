@@ -76,7 +76,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "unbound-bless"
+name = "bande-bless"
 version = "0.4.4"
 dependencies = [
  "apple-nvram",
@@ -86,7 +86,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "unbound-btsync"
+name = "bande-btsync"
 version = "0.2.6"
 dependencies = [
  "apple-nvram",
@@ -97,7 +97,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "unbound-nvram"
+name = "bande-nvram"
 version = "0.2.5"
 dependencies = [
  "apple-nvram",
@@ -105,7 +105,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "unbound-wifisync"
+name = "bande-wifisync"
 version = "0.2.4"
 dependencies = [
  "apple-nvram",

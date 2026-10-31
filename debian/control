@@ -1,20 +1,20 @@
-Source: unbound-nvram
+Source: bande-nvram
 Section: admin
 Priority: optional
 Maintainer: Mikael Hug <mikaelhug@gmail.com>
 Build-Depends: debhelper-compat (= 13), cargo, rustc, ca-certificates
 Standards-Version: 4.7.0
 Rules-Requires-Root: no
-Homepage: https://github.com/unbound-linux/nvram
+Homepage: https://github.com/bande-linux/nvram
 
-Package: unbound-nvram
+Package: bande-nvram
 Architecture: arm64
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: read and write NVRAM variables on Apple Silicon Macs
  Reads and writes the Apple NVRAM partition on the SPI flash through the
  MTD device.
 
-Package: unbound-bless
+Package: bande-bless
 Architecture: arm64
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: select the boot volume on Apple Silicon Macs

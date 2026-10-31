@@ -1,12 +1,12 @@
 [package]
-name = "unbound-wifisync"
+name = "bande-wifisync"
 license = "MIT"
 version = "0.2.4"
 edition = "2021"
 
 description = "A tool to sync Wifi passwords with macos on ARM Macs"
-homepage = "https://github.com/unbound-linux/nvram"
-repository = "https://github.com/unbound-linux/nvram"
+homepage = "https://github.com/bande-linux/nvram"
+repository = "https://github.com/bande-linux/nvram"
 
 [dependencies]
 rust-ini = "0.21"

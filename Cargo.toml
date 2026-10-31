@@ -2,10 +2,10 @@
 
 members = [
     "apple-nvram",
-    "unbound-nvram",
-    "unbound-btsync",
-    "unbound-bless",
-    "unbound-wifisync"
+    "bande-nvram",
+    "bande-btsync",
+    "bande-bless",
+    "bande-wifisync"
 ]
 resolver = "2"
 

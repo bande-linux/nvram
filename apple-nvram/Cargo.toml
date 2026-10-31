@@ -4,8 +4,8 @@ version = "0.3.2"
 edition = "2021"
 license = "MIT"
 description = "A library to parse and write apple-formatted nvram entries"
-homepage = "https://github.com/unbound-linux/nvram"
-repository = "https://github.com/unbound-linux/nvram"
+homepage = "https://github.com/bande-linux/nvram"
+repository = "https://github.com/bande-linux/nvram"
 
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
