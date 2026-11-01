@@ -1,6 +1,9 @@
 #!/usr/bin/make -f
 
 export CARGO_HOME=$(CURDIR)/debian/cargo-home
+export CARGO_TARGET_DIR=$(CURDIR)/target
+
+BLESS_VERSION := $(shell sed -n 's/^version = "\(.*\)"$$/\1/p' bande-bless/Cargo.toml | head -n1)
 
 %:
 	dh $@
@@ -16,10 +19,14 @@ override_dh_auto_clean:
 	rm -rf target debian/cargo-home
 
 override_dh_auto_test:
+ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	cargo test --release --locked -p apple-nvram -p bande-nvram -p bande-bless
+else
+	@true
+endif
 
 override_dh_dwz:
 
 override_dh_gencontrol:
 	dh_gencontrol -pbande-nvram
-	dh_gencontrol -pbande-bless -- -v0.4.4
+	dh_gencontrol -pbande-bless -- -v$(BLESS_VERSION)
