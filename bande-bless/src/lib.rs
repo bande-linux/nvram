@@ -310,7 +310,6 @@ const ALT_BOOT_VAR: &[u8] = b"alt-boot-volume";
 pub fn get_boot_volume(device: &str, next: bool) -> Result<BootCandidate> {
     let mut file = OpenOptions::new()
         .read(true)
-        .write(true)
         .open(device)
         .map_err(Error::NvramReadError)?;
     let mut data = Vec::new();
@@ -328,14 +327,17 @@ pub fn get_boot_volume(device: &str, next: bool) -> Result<BootCandidate> {
             .get_variable(b"boot-volume", VarType::System)
             .ok_or(Error::Parse)
     };
-    let data = String::from_utf8(v?.value().deref().to_vec()).unwrap();
-    let [_, part_uuid, part_vg_uuid]: [&str; 3] =
-        data.split(":").collect::<Vec<&str>>().try_into().unwrap();
+    let data = String::from_utf8(v?.value().deref().to_vec()).map_err(|_| Error::Parse)?;
+    let [_, part_uuid, part_vg_uuid]: [&str; 3] = data
+        .split(":")
+        .collect::<Vec<&str>>()
+        .try_into()
+        .map_err(|_| Error::Parse)?;
 
     Ok(BootCandidate {
         volumes: Vec::new(),
-        part_uuid: Uuid::parse_str(part_uuid).unwrap(),
-        vg_uuid: Uuid::parse_str(part_vg_uuid).unwrap(),
+        part_uuid: Uuid::parse_str(part_uuid).map_err(|_| Error::Parse)?,
+        vg_uuid: Uuid::parse_str(part_vg_uuid).map_err(|_| Error::Parse)?,
     })
 }
 
