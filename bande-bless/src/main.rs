@@ -117,7 +117,10 @@ fn real_main() -> Result<()> {
             }
         }
         if let Ok(idx) = spec.parse::<usize>() {
-            let cand = cands.into_iter().nth(idx - 1).ok_or(Error::OutOfRange)?;
+            let cand = idx
+                .checked_sub(1)
+                .and_then(|i| cands.into_iter().nth(i))
+                .ok_or(Error::OutOfRange)?;
             set_boot_volume_by_ref(device, &cand, &args, false)?;
         } else {
             return Err(Error::VolumeNotFound);
