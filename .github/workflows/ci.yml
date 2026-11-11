@@ -48,10 +48,10 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Build the packages on Debian testing
+      - name: Build the packages on Debian forky
         run: |
           mkdir -p out
-          git archive --prefix=src/ HEAD | docker run --rm -i debian:testing sh -euc '
+          git archive --prefix=src/ HEAD | docker run --rm -i debian:forky sh -euc '
             apt-get update -qq
             apt-get install -y -qq --no-install-recommends build-essential debhelper cargo rustc ca-certificates lintian >/dev/null
             tar -x -C /tmp
